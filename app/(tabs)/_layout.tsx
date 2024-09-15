@@ -18,8 +18,7 @@ export default function RootLayout() {
             <TouchableOpacity
               style={{ marginRight: 15 }}
               onPress={async () => {
-                await logoutUser();
-                // router.push("/(view)/history");
+                router.push("/(view)/history");
               }}
             >
               <FontAwesome name="history" size={24} color="black" />
@@ -29,9 +28,9 @@ export default function RootLayout() {
           headerLeft: () => (
             <TouchableOpacity
               style={{ marginLeft: 15 }}
-              onPress={() => {
-
+              onPress={async() => {
                 router.replace("/login");
+                await logoutUser();
               }}
             >
               <Ionicons name="exit" size={24} color="black" />

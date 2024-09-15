@@ -5,7 +5,7 @@ const CategoryCard = ({item}) => {
   return (
     <View style={{ flexDirection: "row", marginBottom: 10, gap: 10 }}>
       <Image
-        source={{ uri: "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg" || item.image }}
+        source={{ uri:  item.image ||  "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"  }}
         style={{ height: 150, width: 150, borderRadius: 20 }}
       />
       <View>

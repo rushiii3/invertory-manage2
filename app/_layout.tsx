@@ -6,7 +6,6 @@ import * as SplashScreen from "expo-splash-screen";
 import { useProductStore } from "@/store/useProduct";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useCategoryStore } from "@/store/useCategory";
-SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
   initialRouteName: "login",
@@ -40,12 +39,11 @@ const InitalLayout = () => {
 
   const checkInitialLogin = async () => {
     console.log(currentUser);
-    
     if (currentUser) {
       await router.replace("/(tabs)/dashboard");
     }
-    await SplashScreen.hideAsync();
   };
+
   return (
     <Stack
       screenOptions={{

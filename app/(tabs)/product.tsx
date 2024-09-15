@@ -20,7 +20,7 @@ const Page = () => {
     if (currentUser?.email) {
       getUserProducts(currentUser.email);
     }
-  }, [currentUser.email]);
+  }, [currentUser]);
 
   const handleDelete = useCallback(async (id: string, title: string) => {
     if (await deleteProduct(id, currentUser.email)) {

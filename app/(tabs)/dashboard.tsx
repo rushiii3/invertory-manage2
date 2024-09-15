@@ -35,10 +35,13 @@ const Dashboard = () => {
     setLowInventoryProducts(lowInventory);
 
     // Calculate the number of products in each category
-    const categoryProductCount = category.map((cat) => ({
+    const categoryProductCount = category
+    .map((cat) => ({
       label: cat.title,
       value: Products.filter((product) => product.category === cat.id).length,
-    }));
+    }))
+    .filter((cat) => cat.value > 0); // Filter out categories with zero products
+  
     setProductsPerCategory(categoryProductCount);
 
     const chartData = users.map((user, index) => ({
@@ -61,6 +64,8 @@ const Dashboard = () => {
     value: Number(product?.quantity),
     color: generateColor(),
   }));
+  console.log(productsPerCategory);
+  
 
   return (
     <ScrollView style={styles.container}>

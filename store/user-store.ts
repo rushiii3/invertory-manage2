@@ -12,7 +12,7 @@ export const useUserStore = create((set, get) => ({
       (history) => history.email === get().currentUser.email
     );
     if (userHistoryFilter) {
-      set({ userHistory: userHistoryFilter });
+      set({ userHistory: userHistoryFilter || [] });
     }
   },
   initalizeUsers : async() => {

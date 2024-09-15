@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useUserStore } from "@/store/user-store";
+import { Alert } from "react-native";
+import { useRouter } from "expo-router";
 type register = {
     email: string;
     name: string;
@@ -10,6 +12,7 @@ type register = {
     confirmpassword: string;
   };
 export const useRegister = () => {
+  const router = useRouter();
   const {addUser} = useUserStore();
   const formSchema = yup.object().shape({
     email: yup.string().trim().required("Please input your email").email(),
@@ -50,8 +53,13 @@ export const useRegister = () => {
     resolver: yupResolver(formSchema),
   });
 
-  const onSubmit = (data: register) => {
-    console.log(addUser(data));
+  const onSubmit = async(data: register) => {
+    if (await addUser(data)) {
+      Alert.alert("Register successfull");
+      router.replace("/")
+    } else {
+      Alert.alert("Register failed");
+    }
   };
   return {
     control,
