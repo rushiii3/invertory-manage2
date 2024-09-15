@@ -9,7 +9,7 @@ import { View, Text } from "react-native";
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   return (
-    <View style={{ flex: 1, backgroundColor: "red" }}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <Text>{error.message}</Text>
       <Text onPress={retry}>Try Again?</Text>
     </View>
