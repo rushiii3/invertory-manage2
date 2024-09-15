@@ -1,14 +1,19 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
-import TotalCategories from "../TotalCategories";
-import ProductPerCategory from "../ProductPerCategory";
-import LowInventory from "../LowInventory";
-import UserRegister from "../UserRegister";
-import { useUserStore } from "@/store/user-store";
-import { useProductStore } from "@/store/useProduct";
-import { useCategoryStore } from "@/store/useCategory";
+import LowInventory from "@/components/LowInventory";
+import ProductPerCategory from "@/components/ProductPerCategory";
+import TotalCategories from "@/components/TotalCategories";
+import UserRegister from "@/components/UserRegister";
+import { useDashboard } from "@/hooks/useDashboard";
+import React from "react";
+import { ScrollView, StyleSheet } from "react-native";
 
 const Dashboard = () => {
+  const {
+    categoryData,
+    lowInventoryData,
+    productsPerCategory,
+    userRegistrationData,
+  } = useDashboard();
+
   return (
     <ScrollView style={styles.container}>
       <TotalCategories data={categoryData} />
@@ -27,17 +32,5 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingVertical: 20,
     paddingHorizontal: 16,
-  },
-  chartContainer: {
-    marginVertical: 20,
-  },
-  chartTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  centerText: {
-    fontSize: 16,
-    fontWeight: "bold",
   },
 });

@@ -4,10 +4,12 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useUserStore } from "@/store/user-store";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function RootLayout() {
   const router = useRouter();
-  const {logoutUser} = useUserStore();
+  const { logoutUser } = useUserStore();
   return (
     <Tabs initialRouteName="dashboard">
       <Tabs.Screen
@@ -24,11 +26,17 @@ export default function RootLayout() {
               <FontAwesome name="history" size={24} color="black" />
             </TouchableOpacity>
           ),
-
+          tabBarIcon: ({ color, focused, size }) => (
+            <MaterialCommunityIcons
+              name="desktop-mac-dashboard"
+              size={size}
+              color={color}
+            />
+          ),
           headerLeft: () => (
             <TouchableOpacity
               style={{ marginLeft: 15 }}
-              onPress={async() => {
+              onPress={async () => {
                 router.replace("/login");
                 await logoutUser();
               }}
@@ -42,6 +50,9 @@ export default function RootLayout() {
         name="category"
         options={{
           title: "Categories",
+          tabBarIcon: ({ color, focused, size }) => (
+            <MaterialIcons name="category" size={size} color={color} />
+          ),
           headerRight: () => (
             <TouchableOpacity
               style={{ marginRight: 10 }}
@@ -58,6 +69,13 @@ export default function RootLayout() {
         name="product"
         options={{
           title: "Products",
+          tabBarIcon: ({ color, focused, size }) => (
+            <MaterialIcons
+              name="production-quantity-limits"
+              size={size}
+              color={color}
+            />
+          ),
           headerRight: () => (
             <TouchableOpacity
               style={{ marginRight: 15 }}

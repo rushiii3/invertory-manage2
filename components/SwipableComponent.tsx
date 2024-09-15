@@ -3,10 +3,22 @@ import React, { memo, useCallback } from "react";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import ProductCard from "./ProductCard";
 import CategoryCard from "./CategoryCard";
+import { Category, Product } from "@/types";
 
-const SwipableComponent = ({ item, handleEdit, handleDelete, type }) => {
+type SwipeableProps = {
+  item: Product | Category;
+  handleEdit: (id: string) => void;
+  handleDelete: (id: string, title: string) => void;
+  type: "category" | "product";
+};
+const SwipableComponent = ({
+  item,
+  handleEdit,
+  handleDelete,
+  type,
+}: SwipeableProps) => {
   const RightActions = useCallback(
-    (id: string, title:string) => (
+    (id: string, title: string) => (
       <View style={styles.rightAction}>
         <TouchableOpacity
           style={[styles.actionButton, { backgroundColor: "red" }]}
@@ -24,18 +36,21 @@ const SwipableComponent = ({ item, handleEdit, handleDelete, type }) => {
     ),
     [handleDelete, handleEdit]
   );
+  const id = item.id!;
+  const title =
+    type === "product" ? (item as Product).title : (item as Category).title;
   return (
     <Swipeable
       containerStyle={styles.swipeable}
       friction={2}
       enableTrackpadTwoFingerGesture
       rightThreshold={80}
-      renderRightActions={() => RightActions(item.id, item.title)}
+      renderRightActions={() => RightActions(id, title)}
     >
       {type === "product" ? (
-        <ProductCard item={item} />
+        <ProductCard item={item as Product} />
       ) : (
-        <CategoryCard item={item} />
+        <CategoryCard item={item as Category} />
       )}
     </Swipeable>
   );

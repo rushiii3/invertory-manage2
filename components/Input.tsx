@@ -1,7 +1,17 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+} from "react-native";
 import React from "react";
-
-const Input = ({ label, value, setInput, ...props }) => {
+interface InputProps extends TextInputProps {
+  label: string;
+  value: string;
+  setInput: (text: string) => void;
+}
+const Input = ({ label, value, setInput, ...props }: InputProps) => {
   return (
     <View style={styles.input}>
       <Text style={styles.inputLabel}>{label}</Text>

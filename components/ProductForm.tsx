@@ -6,13 +6,17 @@ import {
   FlatList,
   ScrollView,
   TouchableOpacity,
+  ListRenderItemInfo,
+  View,
 } from "react-native";
 import React from "react";
 import Input from "@/components/Input";
 import { Dropdown } from "react-native-element-dropdown";
 import { useProduct } from "@/hooks/useProduct";
 import { useRouter } from "expo-router";
-const ProductForm = ({ data }) => {
+import AntDesign from "@expo/vector-icons/AntDesign";
+
+const ProductForm = ({ data }: any) => {
   const router = useRouter();
   const {
     primaryImage,
@@ -33,13 +37,33 @@ const ProductForm = ({ data }) => {
     Weight,
     setDimensions,
     Dimensions,
+    handleDeletePrimaryImage,
+    handleDeleteMultiple
   } = useProduct(data || null);
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item }: ListRenderItemInfo<string>) => {
     return (
-      <Image
-        source={{ uri: item }}
-        style={{ width: 100, height: 100, marginBottom: 20, margin: 10 }}
-      />
+      <View style={{ position: "relative" }}>
+        <Image
+          source={{ uri: item }}
+          style={{ width: 100, height: 100, marginBottom: 20, margin: 10 }}
+        />
+        <TouchableOpacity
+            style={{
+              position: "absolute",
+              backgroundColor: "black",
+              height: 30,
+              width: 30,
+              borderRadius: 100,
+              top: 0,
+              right: 0,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={() => {handleDeleteMultiple(item)}}
+          >
+            <AntDesign name="close" size={24} color="white" />
+          </TouchableOpacity>
+      </View>
     );
   };
   return (
@@ -48,11 +72,37 @@ const ProductForm = ({ data }) => {
       automaticallyAdjustContentInsets
     >
       {primaryImage ? (
-        <Image source={{ uri: primaryImage }} style={styles.image} />
+        <View
+          style={{
+            position: "relative",
+            height: 200,
+            width: 200,
+            marginHorizontal: "auto",
+            overflow: "hidden",
+          }}
+        >
+          <Image source={{ uri: primaryImage }} style={styles.image} />
+          <TouchableOpacity
+            style={{
+              position: "absolute",
+              backgroundColor: "black",
+              height: 50,
+              width: 50,
+              borderRadius: 100,
+              top: 0,
+              right: 0,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={handleDeletePrimaryImage}
+          >
+            <AntDesign name="close" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
       ) : (
         <Button title="Select an primary image" onPress={pickImage} />
       )}
-      {ListOfImages.length > 0 && (
+      {ListOfImages?.length! > 0 && (
         <FlatList data={ListOfImages} renderItem={renderItem} horizontal />
       )}
       <Button title="Select an secondary images" onPress={pickImageMultiple} />
@@ -78,7 +128,7 @@ const ProductForm = ({ data }) => {
           value={value}
           onChange={(item) => {
             console.log(item);
-            
+
             setValue(item.id);
           }}
         />
@@ -114,10 +164,12 @@ export default ProductForm;
 
 const styles = StyleSheet.create({
   image: {
-    width: 200,
-    height: 200,
+    width: "100%",
+    height: "100%",
     marginBottom: 20,
     margin: "auto",
+    objectFit: "cover",
+    borderRadius: 20,
   },
   dropdown: {
     height: 50,

@@ -1,8 +1,10 @@
 import CategoryForm from "@/components/CategoryForm";
-import { useCategory } from "@/hooks/useCategory";
-
+import { withAuth } from "@/hoc/withAuth";
+const AuthAddCategory = withAuth(CategoryForm);
 const Page = () => {
-  return <CategoryForm data={null} />;
+  return (
+    <AuthAddCategory data={null} />
+  );
 };
 
 export default Page;

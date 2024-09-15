@@ -3,8 +3,9 @@ import * as ImagePicker from "expo-image-picker";
 import { useCategoryStore } from "@/store/useCategory";
 import { Alert } from "react-native";
 import { useUserStore } from "@/store/user-store";
+import { Category } from "@/types";
 
-export const useCategory = (data) => {
+export const useCategory = (data: Category | null) => {
   const [image, setImage] = useState<string | null>(data?.image || null);
   const [Title, setTitle] = useState(data?.title || "");
   const [Description, setDescription] = useState(data?.description || "");
@@ -53,27 +54,28 @@ export const useCategory = (data) => {
         setDescription("");
         setTitle("");
         setImage("");
-        addHistory(currentUser.email, true, "category", Title, "Updated");
+        addHistory(currentUser?.email!, true, "category", Title, "Updated");
       } else {
         Alert.alert("Failed to update category");
-        addHistory(currentUser.email, false, "category", Title, "Updated");
+        addHistory(currentUser?.email!, false, "category", Title, "Updated");
       }
     } else {
       if (await addCategory(categorydata)) {
-        console.log("addinggg");
-
         Alert.alert("Category Added successfully");
         setDescription("");
         setTitle("");
         setImage("");
-        addHistory(currentUser.email, true, "category", Title, "Added");
+        addHistory(currentUser?.email!, true, "category", Title, "Added");
       } else {
         Alert.alert("Failed to add category");
-        addHistory(currentUser.email, false, "category", Title, "Added");
+        addHistory(currentUser?.email!, false, "category", Title, "Added");
       }
     }
   };
 
+  const handleDeleteImage = () => {
+    setImage("");
+  }
   return {
     image,
     Title,
@@ -82,5 +84,6 @@ export const useCategory = (data) => {
     setDescription,
     pickImage,
     handleSubmit,
+    handleDeleteImage
   };
 };

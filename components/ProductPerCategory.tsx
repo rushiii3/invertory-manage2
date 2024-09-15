@@ -2,7 +2,16 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { BarChart } from "react-native-gifted-charts";
 
-const ProductPerCategory = ({ data }) => {
+interface ProductPerCategoryProps {
+  data: InnerData[];
+}
+
+interface InnerData {
+  label: string;
+  value: number;
+}
+
+const ProductPerCategory = ({ data }: ProductPerCategoryProps) => {
   return (
     <View style={{ marginBottom: 20 }}>
       <View
@@ -25,7 +34,7 @@ const ProductPerCategory = ({ data }) => {
           Products Per Category
         </Text>
 
-        {data.length>0 && (
+        {data.length > 0 && (
           <BarChart
             data={data}
             barBorderRadius={4}
@@ -47,5 +56,3 @@ const ProductPerCategory = ({ data }) => {
 };
 
 export default ProductPerCategory;
-
-const styles = StyleSheet.create({});

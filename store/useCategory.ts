@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { categoryStorage } from "./store";
 import { v4 as uuidv4 } from "uuid";
+import { CategoryStore } from "@/types";
 
-export const useCategoryStore = create((set, get) => ({
+export const useCategoryStore = create<CategoryStore>((set, get) => ({
   category: [],
   initializeCategory: async () => {
     const categorySaved = await categoryStorage.getItem("category");
@@ -25,12 +26,12 @@ export const useCategoryStore = create((set, get) => ({
         image: data.image,
         title: data.title,
         description: data.description,
-        date : new Date(),
+        date: new Date(),
       };
 
       const updatedCategory = [newCategory, ...get().category];
       console.log(updatedCategory);
-      
+
       await categoryStorage.setItem(
         "category",
         JSON.stringify(updatedCategory)
@@ -70,8 +71,6 @@ export const useCategoryStore = create((set, get) => ({
   updateCategory: async (data) => {
     try {
       const allCategory = get().category;
-      console.log(data.id);
-      
       const categoryIndex = allCategory.findIndex(
         (category) => category.id === data.id
       );

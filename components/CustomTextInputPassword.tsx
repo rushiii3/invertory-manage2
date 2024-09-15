@@ -2,6 +2,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TextInputProps,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -9,8 +10,17 @@ import React, { useState } from "react";
 import { Controller } from "react-hook-form";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
-
-const CustomTextInputPassword = ({ label, name, control, ...props }) => {
+interface InputProps extends TextInputProps {
+  label: string;
+  name: string;
+  control: any;
+}
+const CustomTextInputPassword = ({
+  label,
+  name,
+  control,
+  ...props
+}: InputProps) => {
   const [isVisible, setisVisible] = useState(true);
   const handleToggleVisiblity = () => {
     setisVisible(!isVisible);

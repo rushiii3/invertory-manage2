@@ -1,8 +1,19 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+} from "react-native";
 import React from "react";
 import { Controller } from "react-hook-form";
 
-const CustomTextInput = ({ label, name, control, ...props }) => {
+interface InputProps extends TextInputProps {
+  label: string;
+  name: string;
+  control: any;
+}
+const CustomTextInput = ({ label, name, control, ...props }: InputProps) => {
   return (
     <View style={styles.input}>
       <Text style={styles.inputLabel}>{label}</Text>

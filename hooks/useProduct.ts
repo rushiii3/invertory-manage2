@@ -5,19 +5,9 @@ import { useCategoryStore } from "@/store/useCategory";
 import { useProductStore } from "@/store/useProduct";
 import { useUserStore } from "@/store/user-store";
 import { useRouter } from "expo-router";
+import { Product } from "@/types";
 
-type RootObject = {
-  description: string;
-  dimensions: string;
-  email: string;
-  id: string;
-  list_images: string[];
-  primary_image: string;
-  quantity: string;
-  title: string;
-  weight: string;
-};
-export const useProduct = (data: RootObject[] | null) => {
+export const useProduct = (data: Product | null) => {
   const router = useRouter();
   const { addHistory, currentUser } = useUserStore();
   const { addProduct, updateProduct } = useProductStore();
@@ -26,14 +16,19 @@ export const useProduct = (data: RootObject[] | null) => {
   const [primaryImage, setPrimaryImage] = useState<string | null>(
     data?.primary_image || null
   );
-  const [ListOfImages, setListOfImages] = useState(
-    data?.list_images.length > 0 ? data?.list_images : []
+  const [ListOfImages, setListOfImages] = useState<string[] | undefined>(
+    data?.list_images && data?.list_images.length > 0
+      ? data.list_images
+      : undefined
   );
-  const [Title, setTitle] = useState(data?.title || "");
-  const [Description, setDescription] = useState(data?.description || "");
-  const [Quantity, setQuantity] = useState(data?.quantity || 0);
-  const [Weight, setWeight] = useState(data?.weight || 0);
-  const [Dimensions, setDimensions] = useState(data?.dimensions || "");
+
+  const [Title, setTitle] = useState<string>(data?.title || "");
+  const [Description, setDescription] = useState<string>(
+    data?.description || ""
+  );
+  const [Quantity, setQuantity] = useState<string>(data?.quantity || "");
+  const [Weight, setWeight] = useState<string>(data?.weight || "");
+  const [Dimensions, setDimensions] = useState<string>(data?.dimensions || "");
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -63,11 +58,17 @@ export const useProduct = (data: RootObject[] | null) => {
     if (!result.canceled) {
       console.log();
 
-      setListOfImages((prev) => {
+      setListOfImages((prev: string[] | undefined) => {
         const uploadedImages = result.assets.map((image) => {
           return image.uri;
         });
-        return prev.concat(uploadedImages);
+        console.log(prev);
+        if (prev) {
+          return prev.concat(uploadedImages);
+        }else{
+          return uploadedImages
+
+        }
       });
     }
   };
@@ -76,7 +77,7 @@ export const useProduct = (data: RootObject[] | null) => {
       Alert.alert("Primary image is required");
       return;
     }
-    if (ListOfImages.length < 0) {
+    if (ListOfImages?.length! < 0) {
       Alert.alert("ListOfImages image is required");
       return;
     }
@@ -108,7 +109,7 @@ export const useProduct = (data: RootObject[] | null) => {
       weight: Weight,
       dimensions: Dimensions,
       list_images: ListOfImages,
-      email: currentUser.email,
+      email: currentUser?.email,
       category: value,
       id: data?.id || null,
     };
@@ -117,22 +118,29 @@ export const useProduct = (data: RootObject[] | null) => {
       if (await updateProduct(productdata)) {
         router.replace("/(tabs)/product");
         Alert.alert("Product Updated successfully");
-        addHistory(currentUser.email, true, "product", Title, "Updated");
+        addHistory(currentUser?.email!, true, "product", Title, "Updated");
       } else {
         Alert.alert("Failed to update Product");
-        addHistory(currentUser.email, false, "product", Title, "Updated");
+        addHistory(currentUser?.email!, false, "product", Title, "Updated");
       }
     } else {
       if (await addProduct(productdata)) {
         router.replace("/(tabs)/product");
         Alert.alert("Product Added successfully");
-        addHistory(currentUser.email, true, "product", Title, "Added");
+        addHistory(currentUser?.email!, true, "product", Title, "Added");
       } else {
         Alert.alert("Failed to add Product");
-        addHistory(currentUser.email, false, "product", Title, "Added");
+        addHistory(currentUser?.email!, false, "product", Title, "Added");
       }
     }
   };
+  const handleDeletePrimaryImage = () => {
+    setPrimaryImage(null);
+  }
+  const handleDeleteMultiple = (id:string) =>{
+    const updateList = ListOfImages?.filter((image)=>image!==id);
+    setListOfImages(updateList);
+  }
   return {
     handleSubmit,
     pickImageMultiple,
@@ -152,5 +160,7 @@ export const useProduct = (data: RootObject[] | null) => {
     setValue,
     primaryImage,
     ListOfImages,
+    handleDeletePrimaryImage,
+    handleDeleteMultiple
   };
 };

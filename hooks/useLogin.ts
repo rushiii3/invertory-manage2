@@ -4,10 +4,8 @@ import * as yup from "yup";
 import { useUserStore } from "@/store/user-store";
 import { Alert } from "react-native";
 import { useRouter } from "expo-router";
-type login = {
-  email: string;
-  password: string;
-};
+import { Login } from "@/types";
+
 
 export const useLogin = () => {
   const router = useRouter();
@@ -19,7 +17,7 @@ export const useLogin = () => {
       .required("Please enter your password"),
     email: yup.string().trim().required("Please input your email").email(),
   });
-  const { control, handleSubmit, reset } = useForm<login>({
+  const { control, handleSubmit, reset } = useForm<Login>({
     defaultValues: {
       email: "",
       password: "",
@@ -29,7 +27,7 @@ export const useLogin = () => {
   });
 
   const { loginUser } = useUserStore();
-  const onSubmit = async(data: login) => {
+  const onSubmit = async(data: Login) => {
     console.log(await loginUser(data),"loginnn");
     
     if (await loginUser(data)) {

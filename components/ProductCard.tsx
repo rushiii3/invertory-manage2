@@ -1,6 +1,17 @@
+import { Product } from "@/types";
 import React from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-const ProductCard = ({ item }) => {
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  ListRenderItemInfo,
+} from "react-native";
+interface ProductCardProps {
+  item: Product;
+}
+const ProductCard = ({ item }: ProductCardProps) =>{
   return (
     <View style={styles.itemContainer}>
       <Image

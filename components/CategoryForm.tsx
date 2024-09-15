@@ -10,8 +10,9 @@ import {
 import React from "react";
 import Input from "@/components/Input";
 import { useCategory } from "@/hooks/useCategory";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
-const CategoryForm = ({ data }) => {
+const CategoryForm = ({ data }: any) => {
   const {
     image,
     Title,
@@ -20,12 +21,39 @@ const CategoryForm = ({ data }) => {
     setDescription,
     pickImage,
     handleSubmit,
+    handleDeleteImage,
   } = useCategory(data || null);
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ paddingHorizontal: 16 }}>
+      <View style={{ paddingHorizontal: 16, paddingVertical: 20 }}>
         {image ? (
-          <Image source={{ uri: image }} style={styles.image} />
+          <View
+            style={{
+              position: "relative",
+              height: 200,
+              width: 200,
+              marginHorizontal: "auto",
+              overflow: "hidden",
+            }}
+          >
+            <Image source={{ uri: image }} style={styles.image} />
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                backgroundColor: "black",
+                height: 50,
+                width: 50,
+                borderRadius: 100,
+                top: 0,
+                right: 0,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onPress={handleDeleteImage}
+            >
+              <AntDesign name="close" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
         ) : (
           <Button title="Select an image" onPress={pickImage} />
         )}

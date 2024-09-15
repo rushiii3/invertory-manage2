@@ -2,8 +2,9 @@ import { create } from "zustand";
 import { ProductStorage } from "./store";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
+import { Product, ProductStore } from "@/types";
 
-export const useProductStore = create((set, get) => ({
+export const useProductStore = create<ProductStore>((set, get) => ({
   Products: [],
   userProducts: [],
   initializeProducts: async () => {
@@ -17,7 +18,7 @@ export const useProductStore = create((set, get) => ({
     if (allProducts) {
       const parsedProducts = JSON.parse(allProducts);
       const getUserProducts = parsedProducts.filter(
-        (product) => product.email === user
+        (product: Product) => product.email === user
       );
       set({ userProducts: getUserProducts });
     }
@@ -26,7 +27,7 @@ export const useProductStore = create((set, get) => ({
     try {
       const allProducts = get().Products;
       const isAlready = allProducts.find(
-        (product) => product.title === data.title
+        (product: Product) => product.title === data.title
       );
       if (isAlready) {
         return false;
@@ -43,12 +44,12 @@ export const useProductStore = create((set, get) => ({
         list_images: data.list_images,
         email: data.email,
         category: data.category,
-        date : new Date(),
+        date: new Date(),
       };
       const updatedProduct = [newProduct, ...get().Products];
       await ProductStorage.setItem("products", JSON.stringify(updatedProduct));
       set({ Products: updatedProduct });
-      await getUserProducts(data.email);
+      await getUserProducts(data?.email!);
       return true;
     } catch (error) {
       console.error("Error adding product:", error);
@@ -59,7 +60,7 @@ export const useProductStore = create((set, get) => ({
     try {
       const allProducts = get().Products;
       const deletedProducts = allProducts.filter(
-        (product) => product.id !== id && product.email === email
+        (product: Product) => product.id !== id && product.email === email
       );
       await ProductStorage.setItem("products", JSON.stringify(deletedProducts));
       set({ Products: deletedProducts });
@@ -72,14 +73,15 @@ export const useProductStore = create((set, get) => ({
   },
   getSingleProduct: async (id: string) => {
     const allProduct = get().userProducts;
-    const Product = allProduct.find((product) => product.id === id);
+    const Product = allProduct.find((product: Product) => product.id === id);
     return Product;
   },
   updateProduct: async (data) => {
     try {
       const allProducts = get().Products;
       const productIndex = allProducts.findIndex(
-        (product) => product.id === data.id && product.email === data.email
+        (product: Product) =>
+          product.id === data.id && product.email === data.email
       );
 
       if (productIndex === -1) {
@@ -105,7 +107,7 @@ export const useProductStore = create((set, get) => ({
       set({ Products: updatedProduct });
 
       const getUserProducts = get().getUserProducts;
-      await getUserProducts(data.email);
+      await getUserProducts(data?.email!);
 
       return true;
     } catch (error) {

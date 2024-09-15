@@ -4,16 +4,11 @@ import * as yup from "yup";
 import { useUserStore } from "@/store/user-store";
 import { Alert } from "react-native";
 import { useRouter } from "expo-router";
-type register = {
-    email: string;
-    name: string;
-    phone: string;
-    password: string;
-    confirmpassword: string;
-  };
+import { Register } from "@/types";
+
 export const useRegister = () => {
   const router = useRouter();
-  const {addUser} = useUserStore();
+  const { addUser } = useUserStore();
   const formSchema = yup.object().shape({
     email: yup.string().trim().required("Please input your email").email(),
     name: yup
@@ -41,7 +36,7 @@ export const useRegister = () => {
         "Confirm Password doesnt match with the password"
       ),
   });
-  const { control, handleSubmit, reset } = useForm<register>({
+  const { control, handleSubmit, reset } = useForm<Register>({
     defaultValues: {
       name: "",
       email: "",
@@ -53,10 +48,10 @@ export const useRegister = () => {
     resolver: yupResolver(formSchema),
   });
 
-  const onSubmit = async(data: register) => {
+  const onSubmit = async (data: Register) => {
     if (await addUser(data)) {
       Alert.alert("Register successfull");
-      router.replace("/")
+      router.replace("/");
     } else {
       Alert.alert("Register failed");
     }
@@ -64,6 +59,6 @@ export const useRegister = () => {
   return {
     control,
     handleSubmit,
-    onSubmit
+    onSubmit,
   };
 };

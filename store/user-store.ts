@@ -1,34 +1,44 @@
 import { create } from "zustand";
 import { userStorage } from "./store";
+import { User, UserHistory, UserStore } from "@/types";
 
-export const useUserStore = create((set, get) => ({
+export const useUserStore = create<UserStore>((set, get) => ({
   users: [],
   currentUser: null,
   userHistory: [],
-  initalizeHistory: async () => {
-    const Data = await userStorage.getItem("usersHistory");
-    const userHistory = JSON.parse(Data);
-    const userHistoryFilter = userHistory.filter(
-      (history) => history.email === get().currentUser.email
-    );
-    if (userHistoryFilter) {
-      set({ userHistory: userHistoryFilter || [] });
+
+  initializeHistory: async () => {
+    const data = await userStorage.getItem("usersHistory");
+    if (data) {
+      const userHistory: UserHistory[] = JSON.parse(data);
+      const currentUser = get().currentUser;
+
+      if (currentUser) {
+        const userHistoryFilter = userHistory.filter(
+          (history) => history.email === currentUser.email
+        );
+
+        if (userHistoryFilter.length > 0) {
+          set({ userHistory: userHistoryFilter });
+        }
+      }
     }
   },
-  initalizeUsers : async() => {
-    const Data = await userStorage.getItem("users");
-    const user = JSON.parse(Data);
-    if (user) {
-      set({ users: user });
+
+  initializeUsers: async () => {
+    const data = await userStorage.getItem("users");
+    if (data) {
+      const users: User[] = JSON.parse(data);
+      if (users) {
+        set({ users });
+      }
     }
   },
+
   addUser: async (data) => {
     try {
-      const newUser = {
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        password: data.password,
+      const newUser: User = {
+        ...data,
         date: new Date(),
       };
       const updatedUsers = [newUser, ...get().users];
@@ -41,21 +51,24 @@ export const useUserStore = create((set, get) => ({
       return false;
     }
   },
+
   loginUser: async (data) => {
     try {
+      const { email, password } = data;
+      const initializeHistory = get().initializeHistory;
       const userData = await userStorage.getItem("users");
-      const users = JSON.parse(userData) || [];
-      const user = users.find((user) => {
-        return user.email === data.email && user.password === data.password;
-      });
+      if (userData) {
+        const users: User[] = JSON.parse(userData) || [];
+        const user = users.find(
+          (user) => user.email === email && user.password === password
+        );
 
-      if (user) {
-        set({ currentUser: user });
-        if (userStorage?.setItem) {
+        if (user) {
+          set({ currentUser: user });
           await userStorage.setItem("currentUser", JSON.stringify(user));
+          initializeHistory();
+          return true;
         }
-        return true;
-      } else {
         return false;
       }
     } catch (error) {
@@ -63,37 +76,40 @@ export const useUserStore = create((set, get) => ({
       return false;
     }
   },
+
   logoutUser: async () => {
     try {
       set({ currentUser: null });
       await userStorage.removeItem("currentUser");
-      console.log("logginggg");
-      
+      console.log("User logged out successfully");
     } catch (error) {
       console.error("Error logging out user:", error);
     }
   },
+
   getCurrentUser: async () => {
-    set({ loading: true });
-    if (userStorage?.getItem) {
+    try {
       const user = await userStorage.getItem("currentUser");
-      set({ currentUser: JSON.parse(user) });
-      set({ loading: false });
+      if (user) {
+        set({ currentUser: JSON.parse(user) });
+      }
+    } catch (error) {
+      console.error("Error getting current user:", error);
     }
   },
+
   addHistory: async (email, status, type, title, method) => {
     const message = status
       ? `${method} ${type} ${title} successfully`
       : `${method} to add ${type} ${title}`;
-    const history = {
-      email: email,
-      status: status,
-      message: message,
+    const history: UserHistory = {
+      email,
+      status,
+      message,
       date: new Date(),
     };
-    const addUserHistory = [history, ...get().userHistory];
-    console.log(addUserHistory);
-    await userStorage.setItem("usersHistory", JSON.stringify(addUserHistory));
-    set({ userHistory: addUserHistory });
+    const updatedHistory = [history, ...get().userHistory];
+    await userStorage.setItem("usersHistory", JSON.stringify(updatedHistory));
+    set({ userHistory: updatedHistory });
   },
 }));

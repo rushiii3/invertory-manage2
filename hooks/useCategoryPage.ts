@@ -12,10 +12,10 @@ export const useCategoryPage = () => {
   const handleDelete = useCallback(async (id: string, title: string) => {
     if (await deleteCategory(id)) {
       Alert.alert("Deleted successfully!");
-      addHistory(currentUser.email, true, "category", title, "Deleted");
+      addHistory(currentUser?.email!, true, "category", title, "Deleted");
     } else {
       Alert.alert("Failed to  delete!");
-      addHistory(currentUser.email, true, "category", title, "Deleted");
+      addHistory(currentUser?.email!, true, "category", title, "Deleted");
     }
   }, []);
 
@@ -29,5 +29,9 @@ export const useCategoryPage = () => {
     });
   }, []);
 
-  return 
+  return {
+    handleEdit,
+    handleDelete,
+    category,
+  };
 };

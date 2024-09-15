@@ -1,11 +1,19 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { Text, View, Image, ListRenderItemInfo } from "react-native";
 import React from "react";
+import { Category } from "@/types";
 
-const CategoryCard = ({item}) => {
+interface CategoryCardProps {
+  item: Category;
+}
+const CategoryCard = ({ item }: CategoryCardProps) => {
   return (
     <View style={{ flexDirection: "row", marginBottom: 10, gap: 10 }}>
       <Image
-        source={{ uri:  item.image ||  "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"  }}
+        source={{
+          uri:
+            item.image ||
+            "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
+        }}
         style={{ height: 150, width: 150, borderRadius: 20 }}
       />
       <View>
@@ -19,5 +27,3 @@ const CategoryCard = ({item}) => {
 };
 
 export default CategoryCard;
-
-const styles = StyleSheet.create({});

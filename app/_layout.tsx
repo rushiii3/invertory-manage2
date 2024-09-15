@@ -1,18 +1,25 @@
-import { AuthProvider } from "@/Context/Authentication";
 import { useUserStore } from "@/store/user-store";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import * as SplashScreen from "expo-splash-screen";
 import { useProductStore } from "@/store/useProduct";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useCategoryStore } from "@/store/useCategory";
+import { type ErrorBoundaryProps } from "expo-router";
+import { View, Text } from "react-native";
 
-export const unstable_settings = {
-  initialRouteName: "login",
-};
+export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  return (
+    <View style={{ flex: 1, backgroundColor: "red" }}>
+      <Text>{error.message}</Text>
+      <Text onPress={retry}>Try Again?</Text>
+    </View>
+  );
+}
+
 const InitalLayout = () => {
   const router = useRouter();
-  const { currentUser, getCurrentUser, initalizeHistory, initalizeUsers } = useUserStore();
+  const { currentUser, getCurrentUser, initializeHistory, initializeUsers } =
+    useUserStore();
   const { initializeProducts } = useProductStore();
   const { initializeCategory } = useCategoryStore();
 
@@ -23,8 +30,8 @@ const InitalLayout = () => {
       await getCurrentUser();
       await initializeProducts();
       await initializeCategory();
-      await initalizeHistory();
-      await initalizeUsers();
+      await initializeHistory();
+      await initializeUsers();
       setUserLoaded(true);
     };
 
@@ -40,7 +47,7 @@ const InitalLayout = () => {
   const checkInitialLogin = async () => {
     console.log(currentUser);
     if (currentUser) {
-      await router.replace("/(tabs)/dashboard");
+      router.replace("/(tabs)/dashboard");
     }
   };
 
@@ -78,10 +85,9 @@ const InitalLayout = () => {
       />
       <Stack.Screen
         name="(view)/history"
-        
         options={{
-          title:"Your history",
-          presentation:"modal",
+          title: "Your history",
+          presentation: "modal",
           headerShown: true,
           headerBackTitleVisible: false,
         }}
