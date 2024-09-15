@@ -1,34 +1,73 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs, useRouter } from "expo-router";
+import { TouchableOpacity } from "react-native";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useUserStore } from "@/store/user-store";
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function RootLayout() {
+  const router = useRouter();
+  const {logoutUser} = useUserStore();
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
+    <Tabs initialRouteName="dashboard">
       <Tabs.Screen
-        name="index"
+        name="dashboard"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+          title: "Dashboard",
+          headerRight: () => (
+            <TouchableOpacity
+              style={{ marginRight: 15 }}
+              onPress={async () => {
+                await logoutUser();
+                // router.push("/(view)/history");
+              }}
+            >
+              <FontAwesome name="history" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: 15 }}
+              onPress={() => {
+
+                router.replace("/login");
+              }}
+            >
+              <Ionicons name="exit" size={24} color="black" />
+            </TouchableOpacity>
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="category"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+          title: "Categories",
+          headerRight: () => (
+            <TouchableOpacity
+              style={{ marginRight: 10 }}
+              onPress={() => {
+                router.push("/(add)/category");
+              }}
+            >
+              <FontAwesome6 name="add" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="product"
+        options={{
+          title: "Products",
+          headerRight: () => (
+            <TouchableOpacity
+              style={{ marginRight: 15 }}
+              onPress={() => {
+                router.push("/(add)/product");
+              }}
+            >
+              <FontAwesome6 name="add" size={24} color="black" />
+            </TouchableOpacity>
           ),
         }}
       />
