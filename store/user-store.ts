@@ -12,14 +12,18 @@ export const useUserStore = create<UserStore>((set, get) => ({
     if (data) {
       const userHistory: UserHistory[] = JSON.parse(data);
       const currentUser = get().currentUser;
-
       if (currentUser) {
         const userHistoryFilter = userHistory.filter(
           (history) => history.email === currentUser.email
         );
-
+        console.log(userHistoryFilter);
+        
+        console.log("initalingggg");
+        
         if (userHistoryFilter.length > 0) {
           set({ userHistory: userHistoryFilter });
+        }else{
+          set({ userHistory: [] });
         }
       }
     }
